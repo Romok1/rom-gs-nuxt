@@ -156,7 +156,7 @@ def buildProject() {
 
 def prepareDatabase() {
     COMMAND = "bundle exec rake db:drop db:create db:migrate"
-    sh "docker-compose --project-name=${JOB_NAME} run web -e "RAILS_ENV=test" ${COMMAND}"
+    sh "docker-compose --project-name=${JOB_NAME} run web RAILS_ENV=test ${COMMAND}"
 }
 
 def runRspecTests() {
