@@ -5,8 +5,11 @@ services:
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
       - .:/sapi
+      - $SSH_AUTH_SOCK:/ssh-agent
     ports:
       - "3000:3000"
+    environment:
+      - SSH_AUTH_SOCK=/ssh-agent
     env_file:
       - '.env'
     depends_on:
