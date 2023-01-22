@@ -8,8 +8,8 @@ services:
       - ${SSH_AUTH_SOCK}:/ssh-agent
     ports:
       - "3000:3000"
-    environment:
-      - SSH_AUTH_SOCK=/ssh-agent
+    #environment:
+    #- SSH_AUTH_SOCK=/ssh-agent
     env_file:
       - '.env'
     depends_on:
