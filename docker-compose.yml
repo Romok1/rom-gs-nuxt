@@ -43,7 +43,7 @@ services:
   sidekiq:
     build: .
     volumes:
-      - .:/sapi
+      - .:/sapiadder
     links:
       - db
       - redis
