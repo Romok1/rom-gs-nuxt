@@ -14,7 +14,7 @@ pipeline {
 	// If new changes exist, the Pipeline will be re-triggered
         pollSCM 'H/5 * * * *'
         //githubPullRequests()
-	pullRequestReview(reviewStates: ['approved'])
+	pullRequestReview(reviewStates: ['pending', 'approved', 'changes_requested'])
    }
    environment {
         SLACK_TEAM_DOMAIN = "wcmc"
