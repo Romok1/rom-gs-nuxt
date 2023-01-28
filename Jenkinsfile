@@ -35,7 +35,7 @@ pipeline {
                     token: "${env.SLACK_TOKEN}",
                     channel: "${env.SLACK_CHANNEL}",
                     color: "#FFFF00",
-                    message: "STARTED: Branch -- ${env.BRANCH_NAME}\n Git Commit message: '${env.GIT_COMMIT_MSG}'\n Job: ${env.JOB_NAME} - [${env.BUILD_NUMBER}]' \n Build link: [(<${env.BUILD_URL} | View >)]"
+                    message: "STARTED: Branch -- PULL REQUEST SOURCE BRANCH: ${env.GIT_BRANCH}\n ${env.BRANCH_NAME}\n Git Commit message: '${env.GIT_COMMIT_MSG}'\n Job: ${env.JOB_NAME} - [${env.BUILD_NUMBER}]' \n Build link: [(<${env.BUILD_URL} | View >)]"
                 )
 	    }
        	}
@@ -44,6 +44,7 @@ pipeline {
 		script {
 		    CI_ERROR = "failed at printenv"
                     sh "printenv" 
+		    sh "echo env.CHANGE_TITLE"
 		}
 	    }
         }
@@ -66,7 +67,7 @@ pipeline {
         stage('Scan for vulnerabilities') {
             when{
                 expression {
-                    return env.BRANCH_NAME ==~ /(develop|master|((build|ci|feat|fix|perf|test)\/.*))/
+                    return env.BRANCH_NAME ==~ /(develop|master|((build|ci|feat|fix|perf)\/.*))/
                 }
             }
 	    steps {
