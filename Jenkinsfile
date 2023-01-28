@@ -13,9 +13,11 @@ pipeline {
         // Accepts a cron-style string to define a regular interval at which Jenkins should check for new source changes 
 	// If new changes exist, the Pipeline will be re-triggered
         pollSCM 'H/5 * * * *'
-        //githubPullRequests()
+        githubPullRequests(triggerMode: "CRON",
+                           events: [Open, commitChanged]
+        ) 
 	pullRequestReview(reviewStates: ['pending', 'approved', 'changes_requested'])
-   }
+   } //branchRestriction: "master"
    environment {
         SLACK_TEAM_DOMAIN = "wcmc"
         SLACK_TOKEN = credentials('slack-token-test-jenkinsci')
