@@ -41,7 +41,7 @@ pipeline {
                     token: "${env.SLACK_TOKEN}",
                     channel: "${env.SLACK_CHANNEL}",
                     color: "#FFFF00",
-                    message: "STARTED: Branch -- PULL REQUEST SOURCE BRANCH: ${env.CHANGE_BRANCH}:::::${env.CHANGE_TITLE}\n ${env.BRANCH_NAME}\n Git Commit message: '${env.GIT_COMMIT_MSG}'\n Job: ${env.JOB_NAME} - [${env.BUILD_NUMBER}]' \n Build link: [(<${env.BUILD_URL} | View >)]"
+                    message: "STARTED: Source Branch to be merged: ${env.CHANGE_BRANCH}\n PR Title: ${env.CHANGE_TITLE}\n Branch: ${env.BRANCH_NAME}\n Git Commit message: '${env.GIT_COMMIT_MSG}'\n Job: ${env.JOB_NAME} - [${env.BUILD_NUMBER}]' \n Build link: [(<${env.BUILD_URL} | View >)]"
                 )
 	    }
        	}
