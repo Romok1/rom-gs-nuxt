@@ -39,6 +39,14 @@ pipeline {
                 )
 	    }
        	}
+	stage("printenv") {
+            steps { 
+		script {
+		    CI_ERROR = "failed at printenv"
+                    sh "printenv" 
+		}
+	    }
+        }
 	stage("Build") {
             steps { 
 	        script {
