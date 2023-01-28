@@ -14,7 +14,7 @@ pipeline {
 	// If new changes exist, the Pipeline will be re-triggered
         pollSCM 'H/5 * * * *'
         githubPullRequests(triggerMode: "CRON",
-                           events: [Open, commitChanged]
+                           events: [open, commitChanged]
         ) 
 	pullRequestReview(reviewStates: ['pending', 'approved', 'changes_requested'])
    } //branchRestriction: "master"
