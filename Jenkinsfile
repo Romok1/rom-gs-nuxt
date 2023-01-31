@@ -41,7 +41,7 @@ pipeline {
                     token: "${env.SLACK_TOKEN}",
                     channel: "${env.SLACK_CHANNEL}",
                     color: "#FFFF00",
-                    message: ">_BUILD STARTED_\n Source/Change Branch to be merged: `${env.CHANGE_BRANCH}`\n Git Commit message: `'${env.GIT_COMMIT_MSG}'`\n _>NEW PULL REQUEST_\n PR Title: `${env.CHANGE_TITLE}`\n PR-ID: `${env.JOB_BASE_NAME}`\n Author: `'${env.CHANGE_AUTHOR}'`\n Target Branch: _`[${env.CHANGE_TARGET}]`_\n Job: `${env.JOB_NAME} - [${env.BUILD_NUMBER}]` \n Build link: [(<${env.BUILD_URL} | View >)]"
+                    message: ">_BUILD STARTED_\n Source/Change Branch to be merged: `${env.CHANGE_BRANCH}`\n Git Commit message: `'${env.GIT_COMMIT_MSG}'`\n  _>NEW PULL REQUEST_ PR Title: `${env.CHANGE_TITLE}`\n PR-ID: `${env.JOB_BASE_NAME}`\n Author: `'${env.CHANGE_AUTHOR}'`\n Target Branch: _`[${env.CHANGE_TARGET}]`_\n Job: `${env.JOB_NAME} - [${env.BUILD_NUMBER}]` \n Build link: [(<${env.BUILD_URL} | View >)]"
                 )
 	    }
        	}
