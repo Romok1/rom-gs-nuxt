@@ -41,7 +41,7 @@ pipeline {
                     token: "${env.SLACK_TOKEN}",
                     channel: "${env.SLACK_CHANNEL}",
                     color: "#FFFF00",
-                    message: ">_BUILD STARTED_\n Source/Change Branch to be merged: `${env.CHANGE_BRANCH}`\n Git Commit message: `'${env.GIT_COMMIT_MSG}'`\n  >_NEW PULL REQUEST_\n PR Title: `${env.CHANGE_TITLE}`\n PR-ID: `${env.JOB_BASE_NAME}`\n Author: `'${env.CHANGE_AUTHOR}'`\n Target Branch: _[${env.CHANGE_TARGET}]_\n Job: `${env.JOB_NAME} - [${env.BUILD_NUMBER}]` \n Build link: [(<${env.BUILD_URL} | View >)]"
+                    message: ">_BUILD STARTED_\n Source/Change Branch to be merged: `${env.CHANGE_BRANCH}`\n Git Commit message: `'${env.GIT_COMMIT_MSG}'`\n  _>NEW PULL REQUEST_\n PR Title: `${env.CHANGE_TITLE}`\n PR-ID: `${env.JOB_BASE_NAME}`\n Author: `'${env.CHANGE_AUTHOR}'`\n Target Branch: `_[${env.CHANGE_TARGET}]_`\n Job: `${env.JOB_NAME} - [${env.BUILD_NUMBER}]` \n Build link: [(<${env.BUILD_URL} | View >)]"
                 )
 	    }
        	}
@@ -141,7 +141,7 @@ pipeline {
                 token: "${env.SLACK_TOKEN}",
                 channel: "${env.SLACK_CHANNEL}",
                 color: "good",
-                message: "Job:  ${env.JOB_NAME}\n Build: `${env.BUILD_NUMBER}` Completed for [${env.JOB_NAME}]\n Status: *SUCCESS* \n Result: Pipeline has finished build successfully for *${currentBuild.fullDisplayName}* :white_check_mark:\n Run Duration: [${currentBuild.durationString}]\n View Build: [(<${JOB_DISPLAY_URL} | View >)]\n Logs path and Details: [(<${jenkinsConsoleUrl} | here >)] \n"
+                message: "Job:  ${env.JOB_NAME}\n of Build `${env.BUILD_NUMBER}` Completed\n Status: *SUCCESS* \n Result: Pipeline has finished build successfully for *${currentBuild.fullDisplayName}* :white_check_mark:\n Run Duration: [${currentBuild.durationString}]\n View Build: [(<${JOB_DISPLAY_URL} | View >)]\n Logs path and Details: [(<${jenkinsConsoleUrl} | here >)] \n"
             )
         }
         failure {
@@ -150,7 +150,7 @@ pipeline {
                 token: "${env.SLACK_TOKEN}",
                 channel: "${env.SLACK_CHANNEL}",
                 color: "danger",
-                message: "Job:  ${env.JOB_NAME}\n Status: *FAILURE* \n Result: Pipeline has failed for *${currentBuild.fullDisplayName}*❗\n Error description: ${CI_ERROR}\n Run Duration: [${currentBuild.durationString}]\n View Build: [(<${JOB_DISPLAY_URL} | View >)]\n Logs path and Details: [(<${jenkinsConsoleUrl} | here >)] \n"
+                message: "*Job*:  ${env.JOB_NAME}\n Status: *FAILURE* \n Result: Pipeline has failed for *${currentBuild.fullDisplayName}*❗\n Error description: ${CI_ERROR}\n Run Duration: [${currentBuild.durationString}]\n View Build: [(<${JOB_DISPLAY_URL} | View >)]\n Logs path and Details: [(<${jenkinsConsoleUrl} | here >)] \n"
             )
         }
         cleanup {
