@@ -60,7 +60,7 @@ pipeline {
             }
 	    steps {
 		script {
-	            CI_ERROR = "Build Failed at stage:: Snyk vulnerability scan failed for this project, check the snyk site for details, ${env.SNYK_URL}"
+	            CI_ERROR = "Build Failed at stage:: Snyk vulnerability scan failed for this, check the snyk site for details, ${env.SNYK_URL}"
 		}
                 echo 'Scanning...'
                 snykSecurity(
