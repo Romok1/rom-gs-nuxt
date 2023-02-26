@@ -73,7 +73,7 @@ pipeline {
         stage('Scan for vulnerabilities') {
             when{
                 expression {
-                    return env.BRANCH_NAME ==~ /(develop|master|((build|feat|fix|perf)\/.*))/
+                    return env.BRANCH_NAME ==~ /(develop|master|((build|feat|ci|fix|perf)\/.*))/
                 }
             }
 	    steps {
