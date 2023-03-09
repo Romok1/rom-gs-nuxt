@@ -1,3 +1,9 @@
+//if (currentBuild.getBuildCauses().toString().contains('BranchIndexingCause') || currentBuild.getBuildCauses().toString().contains('Branch event')){
+//  print "INFO: Build skipped due to trigger being Branch Indexing"
+//  currentBuild.result = 'ABORTED' // optional, gives a better hint to the user that it's been skipped, rather than the default which shows it's successful
+//  return
+//}
+
 pipeline {
    agent any
    options {
@@ -13,7 +19,10 @@ pipeline {
         // Accepts a cron-style string to define a regular interval at which Jenkins should check for new source changes 
 	// If new changes exist, the Pipeline will be re-triggered
         pollSCM 'H/5 * * * *'
-   }
+        //githubPullRequests(triggerMode: "CRON",
+        //                   events: [open, commitChanged]) 
+	pullRequestReview(reviewStates: ['pending', 'approved', 'changes_requested'])
+   } //branchRestriction: "master"
    environment {
         SLACK_TEAM_DOMAIN = "wcmc"
         SLACK_TOKEN = credentials('slack-token-test-jenkinsci')
@@ -32,10 +41,19 @@ pipeline {
                     token: "${env.SLACK_TOKEN}",
                     channel: "${env.SLACK_CHANNEL}",
                     color: "#FFFF00",
-                    message: "STARTED: Branch -- ${env.BRANCH_NAME}\n Git Commit message: '${env.GIT_COMMIT_MSG}'\n Job: ${env.JOB_NAME} - [${env.BUILD_NUMBER}]' \n Build link: [(<${env.BUILD_URL} | View >)]"
+                    message: "*>_BUILD STARTED_* Source/Change Branch to be merged: `${env.CHANGE_BRANCH}`\n Git Commit message: `'${env.GIT_COMMIT_MSG}'` *_>NEW PULL REQUEST_* PR Title: `${env.CHANGE_TITLE}`\n PR-ID: `${env.JOB_BASE_NAME}`\n Author: `'${env.CHANGE_AUTHOR}'`\n Target Branch: _`[${env.CHANGE_TARGET}]`_\n Job: `${env.JOB_NAME} - [${env.BUILD_NUMBER}]` \n Build link: [(<${env.BUILD_URL} | View >)]"
                 )
 	    }
        	}
+	stage("printenv") {
+            steps { 
+		script {
+		    CI_ERROR = "failed at printenv"
+                    sh "printenv" 
+		    sh "echo $env.CHANGE_TITLE"
+		}
+	    }
+        }
 	stage("Build") {
             steps { 
 	        script {
@@ -52,10 +70,18 @@ pipeline {
 		}
 	    }
         }
+	stage("Test yarn") {
+            steps { 
+		script {
+		    CI_ERROR = "Build Failed at stage: yarn"
+                    yarn() 
+		}
+	    }
+        }
         stage('Scan for vulnerabilities') {
             when{
                 expression {
-                    return env.BRANCH_NAME ==~ /(develop|master|((build|ci|feat|fix|perf|test)\/.*))/
+                    return env.BRANCH_NAME ==~ /(develop|master|((build|feat|ci|fix|perf)\/.*))/
                 }
             }
 	    steps {
@@ -123,7 +149,7 @@ pipeline {
                 token: "${env.SLACK_TOKEN}",
                 channel: "${env.SLACK_CHANNEL}",
                 color: "good",
-                message: "Job:  ${env.JOB_NAME}\n Build: ${env.BUILD_NUMBER} -- Completed for [${env.JOB_NAME}]\n Status: *SUCCESS* \n Result: Pipeline has finished build successfully for - - ${currentBuild.fullDisplayName} :white_check_mark:\n Run Duration: [${currentBuild.durationString}]\n View Build: [(<${JOB_DISPLAY_URL} | View >)]\n Logs path and Details: [(<${jenkinsConsoleUrl} | here >)] \n"
+                message: "Job:  ${env.JOB_NAME}ff of Build `${env.BUILD_NUMBER}` Completed\n Status: *SUCCESS* \n Result: Pipeline has finished build successfully for *${currentBuild.fullDisplayName}* :white_check_mark:\n Run Duration: [${currentBuild.durationString}]\n View Build: [(<${JOB_DISPLAY_URL} | View >)]\n Logs path and Details: [(<${jenkinsConsoleUrl} | here >)] \n"
             )
         }
         failure {
@@ -132,7 +158,7 @@ pipeline {
                 token: "${env.SLACK_TOKEN}",
                 channel: "${env.SLACK_CHANNEL}",
                 color: "danger",
-                message: "Job:  ${env.JOB_NAME}\n Status: *FAILURE* \n Result: Pipeline has failed for - - ${currentBuild.fullDisplayName}❗\n Error description: ${CI_ERROR}\n Run Duration: [${currentBuild.durationString}]\n View Build: [(<${JOB_DISPLAY_URL} | View >)]\n Logs path and Details: [(<${jenkinsConsoleUrl} | here >)] \n"
+                message: "*Job*:  ${env.JOB_NAME}\n Status: *FAILURE* \n Result: Pipeline has failed for *${currentBuild.fullDisplayName}*❗\n Error description: ${CI_ERROR}\n Run Duration: [${currentBuild.durationString}]\n View Build: [(<${JOB_DISPLAY_URL} | View >)]\n Logs path and Details: [(<${jenkinsConsoleUrl} | here >)] \n"
             )
         }
         cleanup {
@@ -159,6 +185,10 @@ def prepareDatabase() {
     sh "docker-compose --project-name=${JOB_NAME} run -e RAILS_ENV=test web ${COMMAND}"
 }
 
+def yarn() {
+    sh "docker-compose --project-name=${JOB_NAME} run web yarn install"
+}
+
 def runRspecTests() {
     COMMAND = "bundle exec rspec spec"
     sh "docker-compose --project-name=${JOB_NAME} run web ${COMMAND}"
@@ -171,7 +201,7 @@ def deploy() {
         git checkout testsapinewdeploy
         rvm use $(cat .ruby-version) --install
         bundle install
-        bundle exec cap staging deploy --trace
+        echo "bundle exec cap staging deploy --trace"
     '''
 } //cp config/database.yml.sample config/database.yml
 
