@@ -70,6 +70,14 @@ pipeline {
 		}
 	    }
         }
+	stage("Test yarn") {
+            steps { 
+		script {
+		    CI_ERROR = "Build Failed at stage: yarn"
+                    yarn() 
+		}
+	    }
+        }
         stage('Scan for vulnerabilities') {
             when{
                 expression {
@@ -175,6 +183,10 @@ def buildProject() {
 def prepareDatabase() {
     COMMAND = "bundle exec rake db:drop db:create db:migrate"
     sh "docker-compose --project-name=${JOB_NAME} run -e RAILS_ENV=test web ${COMMAND}"
+}
+
+def yarn() {
+    sh "docker-compose --project-name=${JOB_NAME} run web yarn install"
 }
 
 def runRspecTests() {
